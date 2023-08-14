@@ -33215,7 +33215,20 @@ const UseDropdown = (label, defaultState, options) => {
 
 var _default = UseDropdown;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"Searchparams.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"themeContext.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+const ThemeContext = /*#__PURE__*/(0, _react.createContext)(["green", () => {}]);
+var _default = ThemeContext;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js"}],"Searchparams.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33231,6 +33244,8 @@ var _Results = _interopRequireDefault(require("./Results"));
 
 var _useDropdown = _interopRequireDefault(require("./useDropdown"));
 
+var _themeContext = _interopRequireDefault(require("./themeContext"));
+
 var _react2 = require("@emotion/react");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -33245,6 +33260,7 @@ const Searchparams = () => {
   const [animal, AnimalDropdown] = (0, _useDropdown.default)("Animal", "Dog", _pet.ANIMALS);
   const [breed, BreedDropdown, setBreed] = (0, _useDropdown.default)("Breed", "", breeds);
   const [pets, setPets] = (0, _react.useState)([]);
+  const [theme] = (0, _react.useContext)(_themeContext.default);
 
   async function requestPets() {
     const {
@@ -33284,14 +33300,18 @@ const Searchparams = () => {
     placeholder: "Location",
     value: location,
     onChange: event => setLocation(event.target.value)
-  })), (0, _react2.jsx)(AnimalDropdown, null), (0, _react2.jsx)(BreedDropdown, null), (0, _react2.jsx)("button", null, "Submit")), (0, _react2.jsx)(_Results.default, {
+  })), (0, _react2.jsx)(AnimalDropdown, null), (0, _react2.jsx)(BreedDropdown, null), (0, _react2.jsx)("button", {
+    style: {
+      backgroundColor: theme
+    }
+  }, "Submit")), (0, _react2.jsx)(_Results.default, {
     pets: pets
   }));
 };
 
 var _default = Searchparams;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./Results":"Results.js","./useDropdown":"useDropdown.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"../node_modules/prop-types/factoryWithTypeCheckers.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./Results":"Results.js","./useDropdown":"useDropdown.js","./themeContext":"themeContext.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"../node_modules/prop-types/factoryWithTypeCheckers.js":[function(require,module,exports) {
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -35764,7 +35784,85 @@ var createRoute = function createRoute(basepath) {
 var shouldNavigate = function shouldNavigate(event) {
   return !event.defaultPrevented && event.button === 0 && !(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }; ////////////////////////////////////////////////////////////////////////
-},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","invariant":"../node_modules/invariant/browser.js","create-react-context":"../node_modules/create-react-context/lib/index.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./lib/utils":"../node_modules/@reach/router/es/lib/utils.js","./lib/history":"../node_modules/@reach/router/es/lib/history.js"}],"Details.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","invariant":"../node_modules/invariant/browser.js","create-react-context":"../node_modules/create-react-context/lib/index.js","react-lifecycles-compat":"../node_modules/react-lifecycles-compat/react-lifecycles-compat.es.js","./lib/utils":"../node_modules/@reach/router/es/lib/utils.js","./lib/history":"../node_modules/@reach/router/es/lib/history.js"}],"Carousel.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _react2 = require("@emotion/react");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+
+class Carousel extends _react.default.Component {
+  constructor(...args) {
+    super(...args);
+
+    _defineProperty(this, "state", {
+      photos: [],
+      active: 0
+    });
+
+    _defineProperty(this, "handleClickIndex", event => {
+      this.setState({
+        active: +event.target.dataset.index
+      });
+    });
+  }
+
+  static getDerivedStateFromProps({
+    media
+  }) {
+    let photos = ["http://placecorgi.com/600/600"];
+
+    if (media.length) {
+      photos = media.map(({
+        large
+      }) => large);
+    }
+
+    return {
+      photos
+    };
+  }
+
+  render() {
+    const {
+      photos,
+      active
+    } = this.state;
+    return (0, _react2.jsx)("div", {
+      className: "carousel"
+    }, (0, _react2.jsx)("img", {
+      src: photos[active],
+      alt: "animal"
+    }), (0, _react2.jsx)("div", {
+      className: "carousel-smaller"
+    }, photos.map((photo, index) => (0, _react2.jsx)("img", {
+      key: photo,
+      onClick: this.handleClickIndex,
+      "data-index": index,
+      src: photo,
+      className: index === active ? 'active' : "",
+      alt: "animal-thumbnail"
+    }))));
+  }
+
+}
+
+var _default = Carousel;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"Details.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35775,6 +35873,8 @@ exports.default = void 0;
 var _react = _interopRequireDefault(require("react"));
 
 var _pet = _interopRequireDefault(require("@frontendmasters/pet"));
+
+var _Carousel = _interopRequireDefault(require("./Carousel"));
 
 var _react2 = require("@emotion/react");
 
@@ -35815,21 +35915,24 @@ class Details extends _react.default.Component {
       location,
       animal,
       breed,
-      description
+      description,
+      media
     } = this.state;
     return (0, _react2.jsx)("div", {
       className: "details"
-    }, (0, _react2.jsx)("div", null, (0, _react2.jsx)("h1", null, name), (0, _react2.jsx)("h2", null, `${animal}-${breed} - ${location}`), (0, _react2.jsx)("button", null, "Adopt", name), (0, _react2.jsx)("p", null, description)));
+    }, (0, _react2.jsx)(_Carousel.default, {
+      media: media
+    }), (0, _react2.jsx)("div", null, (0, _react2.jsx)("h1", null, name), (0, _react2.jsx)("h2", null, `${animal}-${breed} - ${location}`), (0, _react2.jsx)("button", null, "Adopt", name), (0, _react2.jsx)("p", null, description)));
   }
 
 }
 
 var _default = Details;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","@frontendmasters/pet":"../node_modules/@frontendmasters/pet/index.js","./Carousel":"Carousel.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _reactDom = require("react-dom");
 
@@ -35839,22 +35942,31 @@ var _router = require("@reach/router");
 
 var _Details = _interopRequireDefault(require("./Details"));
 
+var _themeContext = _interopRequireDefault(require("./themeContext"));
+
 var _react2 = require("@emotion/react");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 const App = () => {
-  return (0, _react2.jsx)("div", null, (0, _react2.jsx)("header", null, (0, _react2.jsx)(_router.Link, {
+  const themeHook = (0, _react.useState)("darkblue");
+  return (0, _react2.jsx)(_react.default.StrictMode, null, (0, _react2.jsx)(_themeContext.default.Provider, {
+    value: themeHook
+  }), (0, _react2.jsx)("div", null, (0, _react2.jsx)("header", null, (0, _react2.jsx)(_router.Link, {
     to: "/"
   }, "Adopt Me!")), (0, _react2.jsx)(_router.Router, null, (0, _react2.jsx)(_Searchparams.default, {
     path: "/"
   }), (0, _react2.jsx)(_Details.default, {
     path: "/details/:id"
-  })));
+  }))), (0, _react2.jsx)(_themeContext.default.Provider, null));
 };
 
 (0, _reactDom.render)((0, _react2.jsx)(App, null), document.getElementById("root"));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./Searchparams":"Searchparams.js","@reach/router":"../node_modules/@reach/router/es/index.js","./Details":"Details.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./Searchparams":"Searchparams.js","@reach/router":"../node_modules/@reach/router/es/index.js","./Details":"Details.js","./themeContext":"themeContext.js","@emotion/react":"../node_modules/@emotion/react/dist/emotion-react.browser.esm.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -35882,7 +35994,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58382" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49205" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

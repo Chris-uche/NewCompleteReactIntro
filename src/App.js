@@ -1,11 +1,18 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {render} from "react-dom";
 import Searchparams  from './Searchparams';
 import { Router, Link } from '@reach/router';
 import Details from './Details';
+import ThemeContext from './themeContext';
 const App = () =>{
+
+    const themeHook = useState("darkblue")
     return(
+        <React.StrictMode>
+
+            <ThemeContext.Provider value={themeHook}/>
         <div>
+
             <header>
                 <Link to='/'>
                     Adopt Me!
@@ -20,6 +27,8 @@ const App = () =>{
             
 
         </div>
+        <ThemeContext.Provider/>
+        </React.StrictMode>
     )
 
 };
